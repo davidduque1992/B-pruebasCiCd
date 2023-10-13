@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  prueba1:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: prueba1
+    ports: 
+      - 3001:3001
+    stdin_open: true
