@@ -23,7 +23,7 @@ app.post("/app1", (req, res) => {
     }
     console.log(`stdout: ${stdout}`);
 
-    exec("git pull", (error, stdout, stderr) => {
+    exec("git fetch && git pull", (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`);
         res.status(500).send(`Error: ${error.message}`);
