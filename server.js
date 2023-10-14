@@ -1,26 +1,18 @@
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
+import bodyParser from "body-parser"; //no se instala es de node
 import { exec } from "child_process";
-import crypto from "crypto";
 
 var app = express();
+// app.use(
+//   cors({
+//     origin: "http://example.com",
+//   })
+// );
 app.use(cors());
 app.use(bodyParser.json());
 
 app.post("/app1", (req, res) => {
-  const signature = req.headers["x-hub-signature"];
-  const payload = JSON.stringify(req.body);
-  const secret = process.env.TOKEN_APP1;
-
-  const hmac = crypto.createHmac("sha1", secret);
-  const digest = "sha1=" + hmac.update(payload).digest("hex");
-
-  if (signature !== digest) {
-    res.status(403).send("Authentication failed");
-    return;
-  }
-
   console.log("Iniciado el proceso de deploy", req.headers);
   exec(
     " cd /var/www/html/app1 && git fetch && git pull && docker-compose up -d --build",
