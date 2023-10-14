@@ -14,24 +14,40 @@ app.use(bodyParser.json());
 
 app.post("/app1", (req, res) => {
   console.log("Iniciando deploy", req.body);
-  exec(
-    "cd /var/www/html/app1 && git pull && docker-compose up -d --build",
-    (error, stdout, stderr) => {
+
+  exec("cd /var/www/html/app1", (error, stdout, stderr) => {
+    if (error) {
+      console.log(`error: ${error.message}`);
+      res.status(500).send(`Error: ${error.message}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+
+    exec("git pull", (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`);
         res.status(500).send(`Error: ${error.message}`);
         return;
       }
-      if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        res.status(500).send(`Error: ${stderr}`);
-        return;
-      }
       console.log(`stdout: ${stdout}`);
-      console.log("Deploy terminado correctamente");
-      res.status(200).send("Deploy terminado correctamente");
-    }
-  );
+
+      exec("docker-compose up -d --build", (error, stdout, stderr) => {
+        if (error) {
+          console.log(`error: ${error.message}`);
+          res.status(500).send(`Error: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          console.log(`stderr: ${stderr}`);
+          res.status(500).send(`Error: ${stderr}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.log("Deploy terminado correctamente");
+        res.status(200).send("Deploy terminado correctamente");
+      });
+    });
+  });
 });
 
 const PORT = 3001;
