@@ -14,9 +14,9 @@ app.use(bodyParser.json());
 
 app.post("/app1", (req, res) => {
   console.log("Iniciando deploy", req.body);
-  req.setTimeout(300000); 
+  req.setTimeout(300000);
   exec(
-    " cd /var/www/html/app1 && git pull && docker-compose up -d --build",
+    "cd /var/www/html/app1 && git pull && docker-compose up -d --build",
     (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`);
