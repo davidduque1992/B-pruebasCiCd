@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser"; //no se instala es de node
+import { exec } from "child_process";
 
 var app = express();
 // app.use(
@@ -11,12 +12,27 @@ var app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get("/ping", (req, res) => {
-  res.status(200).send("pong");
-});
-app.get("/deploy", (req, res) => {
-  res.status(200).send("ejecutar secuencia de comandos del pipeline cicd");
+app.post("/app1", (req, res) => {
+  console.log("Iniciando deploy", req.body);
+  exec(
+    " cd /var/www/html/app1 && git pull && docker-compose up -d --build",
+    (error, stdout, stderr) => {
+      if (error) {
+        console.log(`error: ${error.message}`);
+        res.status(500).send(`Error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        res.status(500).send(`Error: ${stderr}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.log("Deploy terminado correctamente");
+      res.status(200).send("Deploy terminado correctamente");
+    }
+  );
 });
 
-const PORT = 3001;
+const PORT = 3002;
 app.listen(PORT, () => console.log(`Api corriendo por el puerto ${PORT}`));
