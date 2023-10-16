@@ -9,6 +9,7 @@ app.use(express.json());
 
 app.post("/app1", async (req, res) => {
   const branch = req.body.ref.split("/").pop();
+  console.log("secret-> ", req.body.secret);
   if (branch === "main") {
     try {
       console.log("Iniciado el proceso de deploy de la rama ->", branch);
