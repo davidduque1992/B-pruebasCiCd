@@ -13,7 +13,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.post("/app1", (req, res) => {
-  console.log("Iniciado el proceso de deploy", req.headers);
+  const branch = req.body.ref.split("/").pop();
+  console.log("Iniciado el proceso de deploy  de  la rama ->", branch);
   exec(
     " cd /var/www/html/app1 && git fetch && git pull && docker-compose up -d --build",
     (error, stdout, stderr) => {
