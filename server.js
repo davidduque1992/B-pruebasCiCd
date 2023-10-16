@@ -13,6 +13,7 @@ app.use(express.json());
 app.post("/app1", async (req, res) => {
   const branch = req.body.ref.split("/").pop();
   const signature = req.headers["x-hub-signature"];
+  console.log("secret=", signature);
   const expectedSignature = crypto
     .createHmac("sha1", process.env.GITHUB_WEBHOOK_SECRET)
     .update(JSON.stringify(req.body))
