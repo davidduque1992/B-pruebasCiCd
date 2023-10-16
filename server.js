@@ -10,8 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Separa la lógica de despliegue en una función separada para mejorar la legibilidad
-async function deploy(branch, signature, res) {
+async function deploy(req, branch, signature, res) {
   const expectedSignature = crypto
     .createHmac("sha1", process.env.GITHUB_WEBHOOK_SECRET)
     .update(JSON.stringify(req.body))
@@ -53,7 +52,7 @@ app.post("/app1", async (req, res) => {
   console.log("secret=", signature);
 
   if (branch === "main") {
-    await deploy(branch, signature, res);
+    await deploy(req, branch, signature, res);
   } else {
     console.log(
       "se detecto un cambio en la rama ->",
