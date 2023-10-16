@@ -23,20 +23,19 @@ app.post("/app1", async (req, res) => {
     if (signature === `sha1=${expectedSignature}`) {
       try {
         console.log("Iniciado el proceso de deploy de la rama ->", branch);
-        const result = await executeCommand(
+        await executeCommand(
           "cd /var/www/html/app1 && git fetch && git pull && docker-compose up -d --build"
         );
-        console.log(`stdout: ${result}`);
         console.log("Deploy terminado correctamente");
         res.status(200).send("Deploy terminado correctamente");
       } catch (error) {
         console.log(`error: ${error.message}`);
         res.status(500).send(`Error: ${error.message}`);
         try {
-          const rollbackResult = await executeCommand(
+          await executeCommand(
             "cd /var/www/html/app1 && git reset --hard HEAD~1 && docker-compose up -d --build"
           );
-          console.log(`Rollback realizado correctamente: ${rollbackResult}`);
+          console.log(`Rollback realizado correctamente`);
         } catch (rollbackError) {
           console.log(`Error durante el rollback: ${rollbackError.message}`);
         }
