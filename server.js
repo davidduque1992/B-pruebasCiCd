@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { exec } from "child_process";
 import http from "http";
+import crypto from "crypto";
 
 const app = express();
 app.use(cors());
@@ -9,8 +10,13 @@ app.use(express.json());
 
 app.post("/app1", async (req, res) => {
   const branch = req.body.ref.split("/").pop();
-  console.log("secret-> ", req.body.secret);
-  if (branch === "main") {
+  const signature = req.headers["x-hub-signature"];
+  const expectedSignature = crypto
+    .createHmac("sha1", process.env.GITHUB_WEBHOOK_SECRET)
+    .update(JSON.stringify(req.body))
+    .digest("hex");
+
+  if (branch === "main" && signature === `sha1=${expectedSignature}`) {
     try {
       console.log("Iniciado el proceso de deploy de la rama ->", branch);
       const result = await executeCommand(
