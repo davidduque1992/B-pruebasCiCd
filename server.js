@@ -3,6 +3,8 @@ import cors from "cors";
 import { exec } from "child_process";
 import http from "http";
 import crypto from "crypto";
+import { config } from "dotenv";
+config();
 
 const app = express();
 app.use(cors());
