@@ -37,7 +37,7 @@ async function deploy(req, branch, signature, res) {
     res.status(500).send(`Error: ${error.message}`);
     try {
       await executeCommand(
-        "cd /var/www/html/app1 && git reset --hard HEAD~1 && docker-compose up -d --build && git push"
+        "cd /var/www/html/app1 && git reset --hard HEAD~1 && docker-compose up -d --build"
       );
       console.log(`Rollback realizado correctamente`);
     } catch (rollbackError) {
